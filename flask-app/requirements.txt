@@ -1,0 +1,12 @@
+
+flask==2.1.0
+numpy==1.19.2
+pyyaml
+argparse
+pillow
+matplotlib
+nltk
+dotmap
+easydict==1.9
+gunicorn
+    

@@ -1,0 +1,264 @@
+# wandb
+use_wandb : 
+  value: True
+
+project :
+  value: 'ImgCaption'
+
+tag : 
+  value: 'link to wandb'
+
+notes : 
+  value: 'training one cycle '
+log_wandb_freq :
+  value: 10
+parse_args:
+  value: False
+
+
+# PATHs
+
+checkpoint_fname :
+  value: 'checkpoint_at_epoch_19.pth' #'without_glove.pth'
+
+# change path to weights
+CHECKPOINT_PATH :
+  value:  './checkpoint' 
+  
+VOCAB_PATH :
+  value: os.path.join('data', 'vocab.pkl')
+IMG_PATH :
+  value: 'C:/Users/pc/Documents/data/Flickr8k_Dataset_imgs/Flicker8k_Dataset'
+
+TEXT_PATH :
+  value: 'C:/Users/pc/Documents/data/Flickr8k_Dataset/Flickr8k_text'
+GLOVE_PATH : 
+  value: 'C:/Users/pc/glove.6B/glove.6B.50d.txt'
+
+
+
+PAD_TOKEN :
+  value: '<pad>'
+START_TOKEN :
+  value: '<sos>'
+END_TOKEN :
+  value: '<eos>'
+UNK_TOKEN :
+  value: '<unk>'
+FREQ_THRESH :
+  value: 3 # discard words with frequency less than this threshold.
+
+# Model architecture
+
+torch_hub_dir :
+  value: 'pytorch/vision:v0.10.0'
+torch_hub_model :
+  value: 'resnet50'
+
+
+pretrained :
+  value: True
+FINETUNE_ENCODER :
+  value: False
+
+encoder_dim :
+  value: 512
+decoder_dim :
+  value: 512
+
+
+attention_dim :
+  value: 512
+embed_dim :
+  value: 50
+hidden_dim :
+  value: 512 # the higher the better the result will be; the slowest and more parameters will have.
+depth :
+  value: 2048
+encoder_size :
+  value: 18
+#context_dim : encoder_size*encoder_size
+
+
+dropout :
+  value: 0.1
+
+mixed_training :
+  value: False
+
+
+# lSTM
+batch_first :
+  value: True
+num_layers :
+  value: 1 
+bidirectional :
+  value: False
+
+# Glove word embedding
+use_glove_embeddings :
+  value: True
+finetune_embedding :
+  value: False
+
+use_attention :
+  value: False
+use_one_network :
+  value: False
+
+teacher_forcer :
+  value: 0.5
+
+encoder_lr :
+  value: 0.05
+decoder_lr :
+  value: 0.05
+
+# nlp preprocessing
+remove_punct :
+  value: True
+lemmatize :
+  value: True
+stemmize :
+  value: False
+remove_stopwords :
+  value: False
+remove_numbers :
+  value: True
+
+
+skorch_training :
+  value: False
+skorch_cv :
+  value: False
+
+
+
+# Dataset
+
+download :
+  value: True
+
+batch_size :
+  value: 16
+
+test_batch_size :
+  value: 32
+
+shuffle :
+  value: False
+
+transform_input :
+  value: True
+
+plot_name :
+  value: 'trainVSvalidation.jpg'
+ 
+# training
+
+
+train:
+  value: False
+
+inference :
+  value: True
+
+lr_finder:
+  value: False
+
+epochs:
+  value: 20
+
+use_amp :
+  value: False
+
+momentum:
+  value: 0.9
+
+optim:
+  value: "Adam"
+
+resume_training :
+  value: False
+
+track_metric :
+  value: 'bleu'
+
+# Learning rate
+learning_rate:
+  value: 0.01
+
+use_scheduler:
+  value: True
+
+scheduler :
+  value: 'reduce_on_plateau'
+
+factor:
+  value: 0.6
+
+plateau_patience:
+  value: 3
+
+threshold:
+  value: 0.0001
+
+threshold_mode:
+  value: 'abs'
+
+cooldown :
+  value: 1
+
+max_lr:
+  value: 0.05
+
+# Regularizer
+
+weight_decay :
+  value: 0.01
+
+
+# Cross Validation
+
+cross_validation :
+  value: False
+
+nested_cv :
+  value: False
+
+n_splits :
+  value: 0
+
+
+# Environment
+skorch :
+  value: False
+
+checkpoint :
+  value: True
+
+save_to_wandb :
+  value: True
+
+
+seed :
+  value: 1
+
+clip :
+  value: -1
+
+cuda :
+  value: True
+
+early_stop :
+  value: True
+
+patience:
+  value: 6 # amount of epochs for early stopping
+
+mode :
+  value: "max"
+
+num_workers:
+  value: 1
+

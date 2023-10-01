@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content= "width=device-width, initial-scale=1.0">
+    <title>Object detector web app</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='styles/styles.css') }}" >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/styles.css?version=51">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-1">Image Caption&shy;ing API</h1>
+
+            </br><hr></br>
+            <p class="lead">Generating image caption using a trained encoder-decoder model with attention mechanism.</p>
+            <p class="lead">Select your image and and click on Get Prediction button to generate the caption.</p>
+            <p class="lead">Expect execution time of 20-30 seconds. Viewing on computer is recommended.</p>
+
+            </br><hr>
+
+            <div class="btns">
+
+                <form id="upload-file" method="post" enctype="multipart/form-data">
+                    </br>
+                    <input  onchange="readURL(this)" type="file" id="upload" name='file'  style="display: none;"  autocomplete="off" required>
+
+                    {% if image_path %}
+                        <img id="MyImage"  src="{{image_path}}"  />
+                    {%endif%}
+
+                    </br>
+                    <p class="msg" id="caption"><i>  {{model_output}} </i> </p>
+
+                    </br>
+
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+
+                            <div class="alert warning" >
+                                <i class="bi-exclamation-octagon-fill"></i>
+                                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+
+                                <strong>Warning!</strong> {{message}}
+                            </div>
+
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <button class='Mybutton'  style="width: 200px;" onclick="location.href = '/' "  >Reset</button>
+
+                    </br>
+
+                </form>
+
+            </div>
+
+            <br><br>
+
+        </div>
+
+    </div>
+
+        <footer>    Made with â‌¤ by by Manal El Aidouni &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <div class="sm-handle">
+                <a href="https://www.linkedin.com/in/manal-e-440a7b292/" class="sm-button">
+                                <i class="fab fa-linkedin" style='font-size:20px'>      </i>
+                </a>
+
+                <a href="https://twitter.com/Manal_ELAI" class="sm-button">
+                                <i class="fab fa-twitter" style='font-size:20px'>       </i>
+                </a>
+
+                <a href="https://github.com/Manalelaidouni" class="sm-button">
+                                <i class="fab fa-github" style='font-size:20px'>        </i>
+                </a>
+            </div>
+        </footer>
+
+
+    <script>
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#MyImage')
+                        .attr('src', e.target.result);
+
+                };
+
+                reader.readAsDataURL(input.files[0]);}
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+        const captionElement = document.getElementById('MyImage');
+        if (captionElement) {
+            captionElement.scrollIntoView({ behavior: 'smooth' });
+        }});
+
+    </script>
+
+
+    <script  type="text/javascript" src="../static/jquery-3.5.1.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+</body>
+</html>

@@ -1,0 +1,150 @@
+
+# wandb
+use_wandb : False
+project : 'ImgCaption'
+tag : 'link to wandb'
+notes : 'training one cycle '
+log_wandb_freq : 10
+parse_args: True
+
+
+checkpoint_fname :  'checkpoint_at_epoch_6' #'checkpoint_at_epoch_19' #'without_glove.pth'
+
+# change path to weights
+CHECKPOINT_PATH : '.\checkpoint'
+
+#VOCAB_PATH : os.path.join('Data', 'vocab.pkl')
+
+IMG_PATH :  '.\Data\Flicker8k_Dataset'
+
+
+TEXT_PATH : '.\Data\Flicker8k_text'
+GLOVE_PATH :  '.\Data\glove.6B.50d.txt'
+
+
+PAD_TOKEN : '<pad>'
+START_TOKEN : '<sos>'
+END_TOKEN : '<eos>'
+UNK_TOKEN : '<unk>'
+FREQ_THRESH : 3 # discard words with frequency less than this threshold.
+
+# Model architecture
+
+torch_hub_dir : 'pytorch/vision:v0.8.0'
+torch_hub_model : 'resnet50'
+pretrained : True
+FINETUNE_ENCODER : False
+
+encoder_dim : 512
+decoder_dim : 512
+
+
+attention_dim : 512
+embed_dim : 50
+hidden_dim : 512 
+depth : 2048
+encoder_size : 18
+#context_dim : encoder_size*encoder_size
+
+
+mixed_training : False
+
+
+# lSTM
+batch_first : True
+num_layers : 1 
+bidirectional : False
+
+# Glove word embedding
+use_glove_embeddings : True
+finetune_embedding : False
+
+use_attention : False
+use_one_network : False
+
+teacher_forcer : 0.5
+
+encoder_lr : 0.05 #0.01
+decoder_lr : 0.05 #0.01
+
+# nlp preprocessing
+remove_punct : True
+lemmatize : True
+stemmize : False
+remove_stopwords : False
+remove_numbers : True
+
+
+track_metric : 'bleu'
+
+
+# Dataset
+
+batch_size : 16
+
+test_batch_size : 32
+
+shuffle: False
+
+transform_input : True
+
+plot_name : 'train vs validation'
+ 
+# training
+
+epochs: 10
+
+use_amp : False
+
+momentum: 0.9
+
+optim: "Adam"
+
+resume_training : False
+
+# Learning rate
+learning_rate: 0.01
+
+use_scheduler: False
+
+scheduler : 'one_cycle'
+
+sched_patience : 3
+
+lr_finder: False
+
+
+# Regularizer
+weight_decay: 0.01
+dropout : 0.1
+
+
+# Environment
+checkpoint: True
+
+save_to_wandb : True
+
+seed: 1
+
+clip: -1
+
+cuda: True
+
+early_stop: True
+
+patience: 10 # amount of epochs for early stopping
+
+mode : "min"
+
+train_network: False
+
+validate : False
+
+inference : False
+
+num_workers: 1
+
+parse_args: True # if args should be parse for bash script
+
+
+
