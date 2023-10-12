@@ -19,7 +19,7 @@ parse_args:
 # PATHs
 
 checkpoint_fname :
-  value: 'checkpoint_at_epoch_19.pth' #'without_glove.pth'
+  value: 'checkpoint_at_epoch_19.pth'
 
 # change path to weights
 CHECKPOINT_PATH :
@@ -28,13 +28,12 @@ CHECKPOINT_PATH :
 VOCAB_PATH :
   value: os.path.join('data', 'vocab.pkl')
 IMG_PATH :
-  value: 'C:/Users/pc/Documents/data/Flickr8k_Dataset_imgs/Flicker8k_Dataset'
+  value:  '.\Data\Flicker8k_Dataset'
 
 TEXT_PATH :
-  value: 'C:/Users/pc/Documents/data/Flickr8k_Dataset/Flickr8k_text'
+  value:  '.\Data\Flicker8k_text'
 GLOVE_PATH : 
-  value: 'C:/Users/pc/glove.6B/glove.6B.50d.txt'
-
+  value:  '.\Data\glove.6B.50d.txt'
 
 
 PAD_TOKEN :
@@ -218,21 +217,6 @@ weight_decay :
   value: 0.01
 
 
-# Cross Validation
-
-cross_validation :
-  value: False
-
-nested_cv :
-  value: False
-
-n_splits :
-  value: 0
-
-
-# Environment
-skorch :
-  value: False
 
 checkpoint :
   value: True

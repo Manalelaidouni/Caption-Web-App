@@ -7,7 +7,6 @@ from utils import *
 from running_wandb import yaml_load_with_wandb
 
 
-
 class Encoder(nn.Module):
     def __init__(self, cfg, device):
         super().__init__()
@@ -26,7 +25,6 @@ class Encoder(nn.Module):
         feature_map = self.network(images) #  [bs, depth, encoder_size, encoder_size]
         #feature_map = F.adaptive_avg_pool2d(feature_map, self.encoder_size)
         return feature_map.permute(0, 2, 3, 1) # shape: [bs, encoder_size, encoder_size, depth]
-
 
 
 class Attention(nn.Module):
@@ -64,7 +62,6 @@ class Attention(nn.Module):
         context_vector =   torch.sum((enc_features * atten_weights), dim=1) # [bs, encoder_dim]
         
         return context_vector, atten_weights.squeeze(2) #[bs, encoder_dim], [bs, num_pixels]
-
 
 
 
@@ -309,8 +306,7 @@ class Decoder(nn.Module):
                 word2vector[word] = embedding
             return word2vector
 
-        # fixed path for linux ec2 instance
-        word2vector = load_embed_vectors("../glove.6B.50d.txt" , len(vocab))
+        word2vector = load_embed_vectors(cfg.GLOVE_PATH , len(vocab))
 
         embedding_matrix = torch.zeros(len(vocab), cfg.embed_dim)
 
@@ -337,7 +333,5 @@ class EncoderDecoderWrapper(nn.Module):
         packed_prediction = pack_padded_sequence(prediction, original_lengths, batch_first=True).data # (data, batch_sizes, sorted_indices=None)
         packed_target = pack_padded_sequence(target, original_lengths, batch_first=True).data
         return prediction, original_lengths, alphas
-
-
 
 

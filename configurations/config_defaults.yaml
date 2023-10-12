@@ -1,4 +1,3 @@
-
 # wandb
 use_wandb : False
 project : 'ImgCaption'
@@ -8,16 +7,10 @@ log_wandb_freq : 10
 parse_args: True
 
 
-checkpoint_fname :  'checkpoint_at_epoch_6' #'checkpoint_at_epoch_19' #'without_glove.pth'
-
-# change path to weights
+checkpoint_fname :  'checkpoint_at_epoch_6' 
 CHECKPOINT_PATH : '.\checkpoint'
-
-#VOCAB_PATH : os.path.join('Data', 'vocab.pkl')
-
+VOCAB_PATH : os.path.join('Data', 'vocab.pkl')
 IMG_PATH :  '.\Data\Flicker8k_Dataset'
-
-
 TEXT_PATH : '.\Data\Flicker8k_text'
 GLOVE_PATH :  '.\Data\glove.6B.50d.txt'
 

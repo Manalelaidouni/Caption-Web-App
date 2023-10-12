@@ -1,15 +1,16 @@
 #!/bin/bash
 
-echo "Activating conda environment ... "
+conda_path="$1"
+conda_env_name="$2"
+project_path="$PWD"
 
-cd C:/ProgramData/miniconda3/etc/profile.d
+echo  "Activating conda $conda_env_name environment ... "
+cd $conda_path
 source \conda.sh
-conda activate base
-
-cd C:/Users/Administrator/Desktop/MyFinalCaptionPipeline
+conda activate $conda_env_name
+cd $project_path && cd ..
 
 python - <<EOF
-
 import pickle
 import torch
 
@@ -31,6 +32,5 @@ embedding_matrix= decoder._get_glove_matrix(cfg, vocab)
 
 print('Saving created embedding_matrix...')
 torch.save(embedding_matrix, 'shell_embedding_matrix.pt')
-
 
 EOF

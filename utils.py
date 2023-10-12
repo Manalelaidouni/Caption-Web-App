@@ -1,9 +1,9 @@
 import os
-#import wandb
 import torch
 import nltk
 import random
 import time
+#import wandb
 import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
@@ -16,7 +16,6 @@ from nltk.translate.bleu_score import SmoothingFunction
 nltk.download('averaged_perceptron_tagger', quiet=True)
 from nltk.tag import pos_tag
 from PIL import Image
-#from sklearn.manifold import TSNE
 
 try :
     from torch_lr_finder import LRFinder, TrainDataLoaderIter
@@ -112,7 +111,6 @@ if LRFinder and TrainDataLoaderIter:
 
 
     class CustomTrainIter(TrainDataLoaderIter):
-
         def inputs_labels_from_batch(self, batch_data): 
             inputs, labels, lengths = batch_data 
     
@@ -406,25 +404,6 @@ def remove_transform(image):
 
 
 
-def plot_attention(img, caption, alphas):
-    # transform image first
-    plt.imshow(img)
-    alphas = alphas.cpu().detach().numpy()
-
-    # plot the image and attention map
-    fig = plt.figure(figsize=(20, 8))
-
-    for i in range(alphas.shape[0]):
-        plt.subplot(np.ceil(alphas.shape[0] / 5.), 5, i + 1)
-        plt.text(0, 1, '%s' % (caption[i]), color='black', backgroundcolor='white', fontsize=12)
-        attention = np.reshape(alphas[i], (7, 7))
-        plt.imshow(img)
-        plt.imshow(attention, alpha=0.6, cmap='gray')
-        plt.axis('off')    
-
-    plt.show()
-
-
 
 def inference_batch(encoder, decoder, device, test_batch, processor):
     encoder.eval()
@@ -443,36 +422,6 @@ def inference_batch(encoder, decoder, device, test_batch, processor):
         targets = [from_idx_to_token(t, processor, to_sentence=True) for t in target] 
         
     return captions, targets, bleu
-
-
-
-def inference_on_batch(cfg, encoder, decoder):
-    encoder, decoder, enc_optimizer, dec_optimizer, epoch_num = load_checkpoint(cfg, encoder, decoder)
-    prediction, target, bleu = inference_batch(encoder, decoder, device, processor)
-    print(f'Bleu score for entire batch is: {bleu:.4f}')
-    print(*target, sep='\n')
-    print('--'*20)
-    print(*prediction, sep='\n')
-
-
-
-def tsne_plot_embedding(embedding_matrix, word2vector):
-    y = list(word2vector.keys()) #[6533]
-    upto_idx = 900
-    y = y[:upto_idx]
-    time_start = time.time()
-    out_tsne = TSNE(random_state=1).fit_transform(embedding_matrix[:upto_idx])
-    print(f"t-SNE done! Time elapsed: {time.time()-time_start} seconds")
-    plt.figure(figsize=(20, 20)) 
-    for i in range(X.shape[0]):
-        plt.scatter(X[i, 0], X[i, 1])
-        plt.annotate(y[i],
-        xy=(X[i, 0], X[i, 1]),
-        xytext=(5, 2),
-        textcoords='offset points',
-        ha='right',
-        va='bottom')
-    plt.show()
 
 
 
@@ -517,23 +466,12 @@ def get_top_k(predictions, k, processor):
     return top_words, top_scores.cpu().detach().numpy()
 
 
-def get_score(y_true, y_pred):
-    import Levenshtein
-    scores = []
-    for true, pred in zip(y_true, y_pred):
-        score = Levenshtein.distance(true, pred)
-        scores.append(score)
-    avg_score = np.mean(scores)
-    return avg_score
-
-
 def remove_padding(sequences, original_lenghts):
     new_seqs = []
     for seq, length in zip(sequences, original_lenghts):
         # remove <sos> and <eos>
         orginal = seq[1: length-1]
         new_seqs.append(orginal)
-    
     return new_seqs
 
 
@@ -541,7 +479,6 @@ def unpadd_all(targets, prediction, original_lenghts):
     # 1. remove padding from both tensors along with special tokens
     unpadded_target = remove_padding(targets, original_lenghts)
     unpadded_pred = remove_padding(prediction, original_lenghts)
-    
     return torch.as_tensor(unpadded_target), torch.as_tensor(unpadded_pred)
 
 
@@ -563,7 +500,6 @@ def inference_beam_search(encoder, decoder, idx2token, vocab, cfg, device, data_
         image = transform_image(image_path)
 
     elif data_loader is not None:
-        print(type(data_loader))
         imgs, _, _ = next(iter(data_loader))
         index = random.randint(0, cfg.batch_size-1)
         image = imgs[index]
@@ -703,302 +639,3 @@ def my_beam_search(encoder, decoder, idx2token, vocab, cfg, device, data_loader=
         return top_k_seqs
        
 
-
-
-
-import argparse
-
-def parse_arguments():
-    parser = argparse.ArgumentParser(description='Your Description Here')
-
-    # wandb parameters
-    parser.add_argument('--use_wandb',
-                        type=bool,
-                        default=False,
-                        required=False,
-                        help='Use Weights and Biases')
-
-    parser.add_argument('--project',
-                        type=str,
-                        default='ImgCaption',
-                        required=False,
-                        help='Wandb project name')
-
-    parser.add_argument('--tag',
-                        type=str,
-                        default='link to wandb',
-                        required=False,
-                        help='Wandb tag')
-
-    parser.add_argument('--notes',
-                        type=str,
-                        default='training one cycle',
-                        required=False,
-                        help='Notes for the run')
-
-    parser.add_argument('--log_wandb_freq',
-                        type=int,
-                        default=10,
-                        required=False,
-                        help='Frequency to log to Wandb')
-
-    parser.add_argument('--parse_args',
-                        type=bool,
-                        default=True,
-                        required=False,
-                        help='If args should be parsed for a bash script')
-
-    parser.add_argument('--checkpoint_fname',
-                        type=str,
-                        default='checkpoint_at_epoch_6',
-                        required=False,
-                        help='Checkpoint filename')
-
-    parser.add_argument('--CHECKPOINT_PATH',
-                        type=str,
-                        default='.\checkpoint',
-                        required=False,
-                        help='Path to weights checkpoint')
-
-    parser.add_argument('--IMG_PATH',
-                        type=str,
-                        default='.\Data\Flicker8k_Dataset',
-                        required=False,
-                        help='Path to image data')
-
-    parser.add_argument('--TEXT_PATH',
-                        type=str,
-                        default='.\Data\Flicker8k_text',
-                        required=False,
-                        help='Path to text data')
-
-    parser.add_argument('--GLOVE_PATH',
-                        type=str,
-                        default='.\Data\glove.6B.50d.txt',
-                        required=False,
-                        help='Path to GloVe embeddings')
-
-
-    # Model parameters
-    parser.add_argument('--torch_hub_dir', type=str, default='pytorch/vision:v0.8.0', help='Torch Hub directory')
-    parser.add_argument('--torch_hub_model', type=str, default='resnet50', help='Torch Hub model')
-    parser.add_argument('--pretrained', type=bool, default=True, help='Use pretrained model')
-    parser.add_argument('--FINETUNE_ENCODER', type=bool, default=False, help='Finetune encoder')
-
-    parser.add_argument('--encoder_dim', type=int, default=512, help='Encoder dimension')
-    parser.add_argument('--decoder_dim', type=int, default=512, help='Decoder dimension')
-    parser.add_argument('--attention_dim', type=int, default=512, help='Attention dimension')
-    parser.add_argument('--embed_dim', type=int, default=50, help='Embedding dimension')
-    parser.add_argument('--hidden_dim', type=int, default=512, help='Hidden dimension')
-    parser.add_argument('--depth', type=int, default=2048, help='Depth')
-    parser.add_argument('--encoder_size', type=int, default=18, help='Encoder size')
-
-    parser.add_argument('--mixed_training', type=bool, default=False, help='Mixed training')
-
-    # LSTM parameters
-    parser.add_argument('--batch_first', type=bool, default=True, help='Batch first')
-    parser.add_argument('--num_layers', type=int, default=1, help='Number of LSTM layers')
-    parser.add_argument('--bidirectional', type=bool, default=False, help='Bidirectional LSTM')
-
-    # Glove word embedding
-    parser.add_argument('--use_glove_embeddings', type=bool, default=True, help='Use GloVe embeddings')
-    parser.add_argument('--finetune_embedding', type=bool, default=False, help='Finetune embeddings')
-
-    parser.add_argument('--use_attention', type=bool, default=False, help='Use attention')
-    parser.add_argument('--use_one_network', type=bool, default=False, help='Use one network')
-
-    parser.add_argument('--teacher_forcer', type=float, default=0.5, help='Teacher forcing ratio')
-
-    # Learning rates
-    parser.add_argument('--encoder_lr', type=float, default=0.05, help='Encoder learning rate')
-    parser.add_argument('--decoder_lr', type=float, default=0.05, help='Decoder learning rate')
-
-    # NLP preprocessing
-    parser.add_argument('--remove_punct', type=bool, default=True, help='Remove punctuation')
-    parser.add_argument('--lemmatize', type=bool, default=True, help='Lemmatize')
-    parser.add_argument('--stemmize', type=bool, default=False, help='Stemmize')
-    parser.add_argument('--remove_stopwords', type=bool, default=False, help='Remove stopwords')
-    parser.add_argument('--remove_numbers', type=bool, default=True, help='Remove numbers')
-
-    parser.add_argument('--track_metric', type=str, default='bleu', help='Tracking metric')
-
-    # Dataset parameters
-    parser.add_argument('--batch_size', type=int, default=16, help='Batch size')
-    parser.add_argument('--test_batch_size', type=int, default=32, help='Test batch size')
-    parser.add_argument('--shuffle', type=bool, default=False, help='Shuffle data')
-    parser.add_argument('--transform_input', type=bool, default=True, help='Transform input data')
-    parser.add_argument('--plot_name', type=str, default='train vs validation', help='Plot name')
-
-    # Training parameters
-    parser.add_argument('--epochs', type=int, default=10, help='Number of training epochs')
-    parser.add_argument('--use_amp', type=bool, default=False, help='Use Automatic Mixed Precision (AMP)')
-    parser.add_argument('--momentum', type=float, default=0.9, help='Momentum')
-    parser.add_argument('--optim', type=str, default='Adam', help='Optimizer')
-    parser.add_argument('--resume_training', type=bool, default=False, help='Resume training')
-
-
-
-    # Learning rate
-    parser.add_argument('--learning_rate',
-                        type=float,
-                        default=0.01,
-                        required=False,
-                        help='Learning rate')
-
-    parser.add_argument('--use_scheduler',
-                        type=bool,
-                        default=False,
-                        required=False,
-                        help='Use learning rate scheduler')
-
-    parser.add_argument('--scheduler',
-                        type=str,
-                        default='one_cycle',
-                        required=False,
-                        help='Learning rate scheduler type')
-
-    parser.add_argument('--sched_patience',
-                        type=int,
-                        default=3,
-                        required=False,
-                        help='Scheduler patience')
-
-    parser.add_argument('--lr_finder',
-                        type=bool,
-                        default=False,
-                        required=False,
-                        help='Use learning rate finder')
-
-    # Regularizer
-    parser.add_argument('--weight_decay',
-                        type=float,
-                        default=0.01,
-                        required=False,
-                        help='Weight decay')
-
-    parser.add_argument('--dropout',
-                        type=float,
-                        default=0.1,
-                        required=False,
-                        help='Dropout rate')
-
-    # Environment
-    parser.add_argument('--checkpoint',
-                        type=bool,
-                        default=True,
-                        required=False,
-                        help='Checkpoint saving')
-
-    parser.add_argument('--save_to_wandb',
-                        type=bool,
-                        default=True,
-                        required=False,
-                        help='Save to Weights and Biases')
-
-    parser.add_argument('--seed',
-                        type=int,
-                        default=1,
-                        required=False,
-                        help='Random seed')
-
-    parser.add_argument('--clip',
-                        type=float,
-                        default=-1,
-                        required=False,
-                        help='Gradient clipping threshold')
-
-    parser.add_argument('--cuda',
-                        type=bool,
-                        default=True,
-                        required=False,
-                        help='Use CUDA if available')
-
-    parser.add_argument('--early_stop',
-                        type=bool,
-                        default=True,
-                        required=False,
-                        help='Early stopping')
-
-    parser.add_argument('--patience',
-                        type=int,
-                        default=10,
-                        required=False,
-                        help='Patience for early stopping')
-
-    parser.add_argument('--mode',
-                        type=str,
-                        default='min',
-                        required=False,
-                        help='Mode for early stopping (min or max)')
-
-    parser.add_argument('--validate',
-                        type=bool,
-                        default=False,
-                        required=False,
-                        help='Validation mode')
-
-    parser.add_argument('--inference',
-                        type=bool,
-                        default=False,
-                        required=False,
-                        help='Inference mode')
-
-    parser.add_argument('--train_network',
-                        type=bool,
-                        default=False,
-                        required=False,
-                        help='Training mode')
-    
-
-    parser.add_argument('--num_workers',
-                        type=int,
-                        default=1,
-                        required=False,
-                        help='Number of workers for data loading')
-
-
-    parser.add_argument('--inference_image',
-                        type=str,
-                        default=None,
-                        required=False,
-                        help='Path to image to run inference on')
-
-    """
-    parser.add_argument('--parse_args',
-                        type=bool,
-                        default=True,
-                        required=False,
-                        help='If args should be parsed for bash script')
-    """
-    args = parser.parse_args()
-    return args
-
-
- 
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-
-   
-   
-
-   

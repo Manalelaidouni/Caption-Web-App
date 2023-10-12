@@ -51,9 +51,8 @@ def get_scheduler(cfg, optimizer):
 
 
 def get_optimizer(cfg):
-
     # to train encoder and decoder with same optimizer :  optimizer = optim.Adam(chain(encoder.parameters(), decoder.parameters()))
-
+    
     if cfg.optim == 'SGD':
         encoder_optimizer = optim.SGD(encoder.parameters(), lr=cfg.encoder_lr,
                                 weight_decay=cfg.weight_decay, nesterov=True, momentum=cfg.momentum) if cfg.FINETUNE_ENCODER else None
@@ -71,10 +70,6 @@ def get_optimizer(cfg):
     return encoder_optimizer, decoder_optimizer
 
 
-# 2.90E-04  Best lr=  0.14283914439298 , Min lr=  0.014283914439298
-# 1.10E-03  Best lr=  0.008497534359086439 , Min lr=  0.0008497534359086439 
-# 3.85E-01  Best lr=  0.012618568830660204 , Min lr=  0.0012618568830660205
-# 3.74E-02  Best lr=  0.2612675225563329 , Min lr=  0.02612675225563329
 
 def find_lr(model, train_loader, device, criterion, optimizer, start_lr=1e-6, end_lr=0.5, num_iter=500):
     """ Uses Fastai tweaked version of Leslie Smith LR finder method.
@@ -181,7 +176,6 @@ if __name__ == '__main__':
     elif cfg.inference :
         print('Running inference')
         encoder, decoder, enc_optimizer, dec_optimizer, epoch_num = load_checkpoint(cfg, encoder, decoder)
-
         caption = inference_beam_search(encoder, decoder, processor.idx2token, processor.vocab, cfg, device, image_path=cfg.inference_image) #data_loader=test_loader 
         print('Caption is: ', caption)
 

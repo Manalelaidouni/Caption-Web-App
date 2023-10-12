@@ -1,5 +1,5 @@
-
 flask==2.1.0
+Werkzeug==2.2.2
 numpy==1.19.2
 pyyaml
 argparse
