@@ -262,7 +262,7 @@ Throughout this process, we created a dictionary that associates each unique fil
 
 ### Vocabulary building 📚
 
-We construct a vocabulary to represent each token with a unique number so it's ready to be processed by a neural network. We start by excluding tokens with low frequencies, we then create a dictionary that maps the tokens to a unique index. We reserve the first 4 indices for special tokens,  `<sos>` to indicate the beginning of a caption, `<end>` token to signify the end of the caption, `<pad>` to identify padding tokens, which we will explain [later](dataLoaders-in-pytorch) and `<unk>` to represent out-of-vocabulary words encountered during inference. It’s important to note that we built the vocabulary using only training data to avoid any data leakage.
+We construct a vocabulary to represent each token with a unique number so it's ready to be processed by a neural network. We start by excluding tokens with low frequencies, we then create a dictionary that maps the tokens to a unique index. We reserve the first 4 indices for special tokens,  `<sos>` to indicate the beginning of a caption, `<end>` token to signify the end of the caption, `<pad>` to identify padding tokens, which we will explain [later](#pad_anchor) and `<unk>` to represent out-of-vocabulary words encountered during inference. It’s important to note that we built the vocabulary using only training data to avoid any data leakage.
 
 
 
@@ -281,10 +281,11 @@ After resizing and converting the batch of images into `Torch` tensors, we proce
 <br>
 
 
+<a name="pad_anchor"></a>
 ### DataLoaders in Pytorch 📥
 
 To facilitate the loading of preprocessed data into our network, Pytorch uses `DataLoader` class which  offers many features such as batching, multi-processing , data augmentation, etc. While batching image tensors is relatively straightforward (stacking images of the same shape), it's less straightforward with text data, because unlike images text sequences can have varying sizes. To accommodate for this, we implement the `collate()` function, which pads captions of different sizes to a uniform size. 
-<a name="padd_id"></a>
+
 
 For this purpose, I have implemented the `Flicker8K` class which uses Pytorch’s `Dataset`, it returns a single data sample containing both the image tensor and the caption tensor. This is achieved using  `__getitem __` method which retrieves a sample from the dataset at a specific index, It also uses `__len __()` so we can get the total number of samples in the dataset.
 
@@ -378,7 +379,7 @@ As mentioned above, cross entropy loss takes in logits and computes their log pr
 
 Furthermore, we remove zero padding tokens  from both the prediction and the target sequences before forwarding  them to the loss function using `pack_padded_sequence()`.
 
-For the optimizer, we used Adam optimizer with a `weight_decay` rate of 0.01, the learning rate we used is determined using the LR Range test and adjusted during training using  a learning rate scheduler, we will address the details in the training [section](#training-process). 
+For the optimizer, we used Adam optimizer with a `weight_decay` rate of 0.01, the learning rate we used is determined using the LR Range test and adjusted during training using  a learning rate scheduler, we will address the details in the training [section](#training_anchor). 
 
 
 
@@ -402,6 +403,7 @@ I also made sure to overfit a single batch (like [Karpathy](https://karpathy.git
 
 
 
+<a name="training_anchor"></a>
 <h2 id="LRFinder">Training process 🧪 ⚡</h2>
 
 
