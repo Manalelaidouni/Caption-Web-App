@@ -27,6 +27,8 @@ Caption Generation Model
 
 <br>
 
+**A BIT OF A LATE UPDATE BUT HERE IT IS** :  Since my AWS Free Tier period was over, I was being charged for the running resources — which is an overkill — so I terminated the instance to prevent unwanted charges, that means the link above is no longer working.
+
 ## About 📃 
 
 > Image Captioning task generates text description for a given image which requires understanding of both Computer Vision and Natural Language Processing (NLP) fields, because it learns the neural representation  in both the image and the text and the relationship  between the visual features derived from the first and the semantic information derived from the latter. This eventually leads to the semantic understanding of images by the model.
@@ -43,6 +45,8 @@ Please note that my model's performance was constrained by limited compute resou
 
 For more  information, please refer to the README description below.
 
+
+
 <br>
 
 ## Installation ⚒️
@@ -55,7 +59,7 @@ Create and activate a Conda virtual environment:
 
 Clone the repository and install requirements:
   ```
-  git clone https://github.com/Manalelaidouni/CaptionCode.git
+  git clone https://github.com/Manalelaidouni/Caption-Web-App.git
   cd caption/flask-app
   pip install -r requirements.txt
   ```
@@ -79,10 +83,10 @@ Download data needed for this project (Flickr8k dataset and Glove pre-trained em
 
 <br>
 
-The following scripts use packages in your conda environment, to activate the conda environment you created earlier within the shell session, we need the path to your `conda.sh` script installation location, this script is located in the `etc/profile.d/` directory of your Miniconda or Anaconda installation, make sure to use the absolute path.
+The following scripts use packages in your conda environment, to activate the conda environment you created earlier within the shell session, we need the path to your `conda.sh` script installation location, **this script is located in the `etc/profile.d/` directory of your Miniconda or Anaconda installation, make sure to use the absolute path.**
  
 
-To generate necessary pickles for pre and post-processing, run the following shell script :
+**To generate necessary pickles for pre and post-processing**, run the following shell script :
 
   ```
   chmod +x create_vocab.sh
@@ -96,7 +100,7 @@ Here is an example:
 
 <br>
 
-Similarly, to create the embedding matrix needed for inference, run the following shell script :
+Similarly, **to create the embedding matrix needed for inference**, run the following shell script :
   ```
   chmod +x create_embed_matrix.sh
   ./create_embed_matrix.sh '<path_to_conda_install>' '<conda_env_name>'
@@ -108,11 +112,13 @@ Run inference on a specific image:
   ```
   python train.py --inference=True --inference_image=./static/uploads/boys.jpg
   ```
+<br>
 
 Train for a specific number of epochs from scratch:
   ```
   python train.py --train_network=True --epochs=10
   ```
+<br>
 
 Resume training from checkpoint:
   ```
@@ -124,14 +130,16 @@ Resume training from checkpoint:
 > *To run Learning Rate Finder*:
 
 
-To setup LR Finder for training using a shell Script use the following commands, this will generate a plot like [this](https://github.com/Manalelaidouni/Caption-Web-App/blob/main/plots/lr_finder.png) one and  save it to `plots` folder :
+To setup LR Finder for training using a shell Script use the following commands, **this will generate a plot like [this](https://github.com/Manalelaidouni/Caption-Web-App/blob/main/plots/lr_finder.png) one and  save it to `plots` folder** :
 
   ```
   chmod +x run_LRFinder.sh
   ./run_LRFinder.sh
   ```
 
-Alternatively, you can run it directly from python script using the following command :
+<br>
+
+Alternatively, **you can run it directly from python script** using the following command :
   ```
   python train.py --lr_finder=True
   ```
@@ -139,15 +147,16 @@ Alternatively, you can run it directly from python script using the following co
 <br>
 <br>
 
-> *For further training customization, you can either use:*
+*For further training customization using this codebase, you can either use:*
 
 
-
-- **Configuration file**: You can run training customizations by editing the configuration files in the `configurations` folder. Note to use `config-defaults.yaml` when using wandb and `config-defaults.yaml` when not. 
-I have created two separate YAML files so I can access configuration variables throughout the code using dot notation, such as `cfg.epochs`, however wandb uses dictionary access syntax like `cfg['epochs']`. This approach allows me to maintain consistent code regardless of whether wandb is used or not.
+- **Configuration file**: You can run training customizations by editing the configuration files in the `configurations` folder. **Note to use `config-defaults.yaml` when using wandb and `config_defaults.yaml` when not. 
+I have created two separate YAML files so I can access configuration variables throughout the code using dot notation, such as `cfg.epochs`, however wandb uses dictionary access syntax like `cfg['epochs']`. This approach allows me to maintain consistent code regardless of whether wandb is used or not.**
 
 
 - **Command line arguments**: Alternatively, you can use command line arguments to customize training, here is the optional arguments in the following toggle block:
+
+<br>
 
 <details>
 <summary>CLI Usage</summary>
