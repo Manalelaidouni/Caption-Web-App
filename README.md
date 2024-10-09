@@ -239,6 +239,15 @@ Optional arguments:
 
 <br>
 
+<br>
+
+<p align = "center"><img src = "./static/assets/web_app_demo.gif"></p>
+
+
+<p align="center"> <i><font color="grey">Since the EC2 instance is shut down, here’s a demo of the web app in action. In all honesty, while the model performed well on certain examples, it struggled with others. As I mentioned above, access to better resources would likely improve performance.  </font> </i>
+</p>
+
+<br>
 
 ## Project Description 📝
 
